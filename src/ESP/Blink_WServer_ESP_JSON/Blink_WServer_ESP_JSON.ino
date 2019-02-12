@@ -32,10 +32,10 @@ String payload = "";
 
 
   // The value will quickly become too large for an int to store
-  unsigned long previousMillis = 0;        // will store last time LED was updated
+  unsigned long previousMillis = 0;        // will store last time info was updated
   
   // constants won't change :
-  const long interval = 5000;           // interval at which to blink (milliseconds)
+  const long interval = 5000;           // interval to update info in catalog (milliseconds)
 
 
 void setup(void){
@@ -54,8 +54,8 @@ void setup(void){
     digitalWrite(output2, LOW);
     
 
-  wifiMulti.addAP("TnT", "1decembrie");   // add Wi-Fi networks you want to connect to
-  wifiMulti.addAP("0xFF", "cochon11");
+  wifiMulti.addAP("InfostradaWiFi-f330b2", "8b84bf2c3abb4");   // add Wi-Fi networks you want to connect to
+  wifiMulti.addAP("Redmi", "12345678");
 //  wifiMulti.addAP("ssid_from_AP_3", "your_password_for_AP_3");
 
   Serial.println("Connecting ...");
@@ -87,8 +87,8 @@ void setup(void){
   
   register_catalog();
 
-
 }  // void setup end
+
 
 void loop(void){
   server.handleClient();                    // Listen for HTTP requests from clients
@@ -98,8 +98,7 @@ void loop(void){
     // save the last time you blinked the LED
     previousMillis = currentMillis;
 
-    register_catalog();
-    
+    register_catalog();    // send request to catalog to update info 
   }
 }
 
@@ -108,19 +107,6 @@ void handleRoot() {
 }
 
 void handleStatus() {
-//    server.send(200, "text/plain", "STATUSSSS!");   // Send HTTP status 200 (Ok) and send some text to the browser/client
-    
-    
-//    if (server.hasArg("plain")== false){ //Check if body received
-//            server.send(200, "text/plain", "Body not received");
-//            return;
-//      }
-//
-//      String message = "Body received:\n";
-//             message += server.arg("plain");
-//             message += "\n";
-// 
-//      server.send(200, "text/plain", message);
 
       String message = payload;
              message += "\n";
@@ -160,40 +146,6 @@ void handleCmd(){
       else {
         msg = "{\"status\":\"error\",\"message\":\"Invalid Command\"}";
       }
-
-
-      String led_1 = root["led_1"]; // "on/off"
-      if (led_1 == "on"){
-        output1State = "on";
-        digitalWrite(output1, !HIGH); // inverted logic
-        msg = "{\"status\":\"success\",\"message\":\"led_1 is now ON\"}";
-      } 
-      else if (led_1 == "off"){
-        output1State = "off";
-        digitalWrite(output1, !LOW); // inverted logic
-        msg = "{\"status\":\"success\",\"message\":\"led_1 is now OFF\"}";
-      } 
-      else {
-        msg = "{\"status\":\"error\",\"message\":\"Invalid Command\"}";
-      }
-
-
-      String led_2 = root["led_2"]; // "on/off"
-      if (led_2 == "on"){
-        output1State = "on";
-        digitalWrite(output2, HIGH); 
-        msg = "{\"status\":\"success\",\"message\":\"led_2 is now ON\"}";
-      } 
-      else if (led_2 == "off"){
-        output2State = "off";
-        digitalWrite(output2, LOW); 
-        msg = "{\"status\":\"success\",\"message\":\"led_2 is now OFF\"}";
-      } 
-      else {
-        msg = "{\"status\":\"error\",\"message\":\"Invalid Command\"}";
-      }
-      
-      server.send(200, "application/json", msg);
   }
 
 void handleNotFound(){
