@@ -162,7 +162,7 @@ void register_catalog(){
   //  "deviceID": "ESP-01"
   //}
   
-    String catalog_url = "http://192.168.2.223:8080/iamalive";  
+    String catalog_url = "http://192.168.1.18:8080/iamalive";  
     String ip = WiFi.localIP().toString();
       
     String reg_msg = "{\"type\":\"device\",\"deviceID\":\"ESP-01\",\"ip\":\""  + ip + "\"}";
@@ -186,5 +186,14 @@ void register_catalog(){
   //    }
 //  }
   
+  }
+
+// will get data from catalog in order to talk with the adaptor
+  void get_adaptor_data(){
+  
+    String catalog_url = "http://192.168.1.18:8080";  
+    String ip = WiFi.localIP().toString();
+      
+    
   }
 
