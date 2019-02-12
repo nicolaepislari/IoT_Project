@@ -1,6 +1,6 @@
 {
     "catalog": "catalog.json",
-    "time_to_live": 125,
-    "host": "127.0.0.1",
+    "time_to_live": 60,
+    "host": "192.168.1.18",
     "port": 8080
 }
