@@ -1,0 +1,11 @@
+{
+    "actor": {
+        "service": [],
+        "interface": [],
+        "device": []
+    },
+    "broker": {
+        "host": "test.mosquitto.org",
+        "port": 1883
+    }
+}
