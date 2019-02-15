@@ -1,0 +1,1 @@
+{"zones": {"zone1": {"plant": "Potatoes", "watering_time": 5, "minimum_Temp": 30, "maximum_Humidity": 80, "maximum_Temp": 25, "minimum_Humidity": 60}}, "telegram": {"token": "780431995:AAFHKfKwhC31k23iYY4P96a7sXjZb8U4Dog", "users": [{"chat_id": 522064828, "emergency": true}]}, "broker": {"IP": "192.168.0.100", "port": 1883}}
