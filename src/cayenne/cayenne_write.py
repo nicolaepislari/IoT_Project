@@ -2,6 +2,8 @@ import cayenne.client #Cayenne MQTT Client
 from time import sleep
 
 
+
+
 # Cayenne authentication info. This should be obtained from the Cayenne Dashboard.
 MQTT_USERNAME  = "d9d7b3d0-6274-11e7-8c3a-27ab5d31c1f7"
 MQTT_PASSWORD  = "55053331506ab1ece82c1e855cbb473bb84f2980"
