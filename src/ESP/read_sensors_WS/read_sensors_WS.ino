@@ -38,7 +38,9 @@ String payload = "";
   String output0State = "off";
   String output1State = "off";
   String output2State = "off";
-  
+
+  String pumpstate = "";
+  String fanstate = "";
 // Assign output variables to GPIO pins
   const int output0 = 0;
   const int output1 = 1;
@@ -94,6 +96,8 @@ void setup(void){
   server.on("/cmd", handleCmd);      
   server.on("/read",handleRead);
 
+  server.on("/waterpump",handlePump);
+  server.on("/fan",handleFan);
 
 
   server.begin();                           // Actually start the server
@@ -293,4 +297,96 @@ String readAll() {
 
   return msg;
 }
+
+void handlePump(){
+  
+    String msg; 
+    const char* my_msg = "{\"status\":\"error\",\"message\":\"Invalid command: The request has empty body\"}";
+    if (server.hasArg("plain")== false){    //Check if body received
+        server.send(200, "application/json", my_msg);
+        return;
+      }
+
+      String recv_payload = server.arg("plain");
+
+      // Allocate JsonBuffer
+      // Use arduinojson.org/assistant to compute the capacity.
+      const size_t bufferSize = JSON_OBJECT_SIZE(4) + 100;
+      DynamicJsonBuffer jsonBuffer(bufferSize);
+
+      // Parse JSON object
+      JsonObject& root = jsonBuffer.parseObject(recv_payload);
+
+      String cmd = root["waterpump"]; 
+      if (cmd == "on"){   // start the pump
+
+        // command for start the pump
+        pumpstate = "ON";
+        msg = "{\"status\":\"success\",\"message\":\"Pump is turned "+ pumpstate +"\"}";
+      
+      } 
+      else if (cmd == "off"){    // stop the pump
+       // command for stop the pump
+        pumpstate = "OFF";
+        msg = "{\"status\":\"success\",\"message\":\"Pump is turned "+ pumpstate +"\"}";
+      } 
+      else if (cmd == "state"){
+
+        msg = "{\"status\":\"success\",\"state\":\"" + pumpstate + "\"}";
+        
+      }
+      else{
+          msg = "{\"status\":\"error\",\"message\":\"Invalid Command\"}";
+        }
+
+      
+      server.send(200, "application/json", msg);
+  }
+
+void handleFan(){
+  
+    String msg; 
+    const char* my_msg = "{\"status\":\"error\",\"message\":\"Invalid command: The request has empty body\"}";
+    if (server.hasArg("plain")== false){   //Check if body received
+        server.send(200, "application/json", my_msg);
+        return;
+      }
+
+      String recv_payload = server.arg("plain");
+
+      // Allocate JsonBuffer
+      // Use arduinojson.org/assistant to compute the capacity.
+      const size_t bufferSize = JSON_OBJECT_SIZE(4) + 100;
+      DynamicJsonBuffer jsonBuffer(bufferSize);
+
+      // Parse JSON object
+      JsonObject& root = jsonBuffer.parseObject(recv_payload);
+
+      String cmd = root["fan"]; 
+      if (cmd == "on"){        // start the fan
+        
+        fanstate = "ON";
+        // command for starting the fan
+        msg = "{\"status\":\"success\",\"message\":\"Fan is turned "+ fanstate +"\"}";
+      
+      } 
+      else if (cmd == "off"){  //stop the fan
+       
+   
+       // command for stop the fan
+       fanstate = "OFF";
+        msg = "{\"status\":\"success\",\"message\":\"Fan is turned "+ fanstate +"\"}";
+      } 
+      else if (cmd == "state"){
+
+        msg = "{\"status\":\"success\",\"state\":\"" + fanstate + "\"}";
+        
+      }
+      else{
+          msg = "{\"status\":\"error\",\"message\":\"Invalid Command\"}";
+        }
+
+      
+      server.send(200, "application/json", msg);
+  }
 
