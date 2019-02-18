@@ -27,12 +27,23 @@ client.begin(MQTT_USERNAME, MQTT_PASSWORD, MQTT_CLIENT_ID)
 
 headers = {'content-type': 'application/json'}
 
-url_b1 = 'http://192.168.1.13/read'
+url_b1 = 'http://192.168.1.13'
+
+
+read_uri = '/read'
 payload_temp = {'read': 'temp'}
 payload_humi = {'read': 'humi'}
 payload_all = {'read': 'all'}
 
+waterpump_uri = '/waterpump'
+payload_pump_on = {'waterpump': 'on'}
+payload_pump_off = {'waterpump': 'off'}
+payload_pump_state = {'waterpump': 'state'}
 
+fan_uri = '/fan'
+payload_fan_on = {'fan': 'on'}
+payload_fan_off = {'fan': 'off'}
+payload_fan_state = {'fan': 'state'}
 
 
 # def read_temp():
@@ -46,8 +57,8 @@ payload_all = {'read': 'all'}
 #   logger.info("Response from esp: %s" % r.content)
 
 def read_all():
-  print ("POST %s -> %s" %(url_b1, payload_all))
-  r = requests.post(url_b1, data=json.dumps(payload_all), headers=headers)
+  print ("POST %s -> %s" %(url_b1 + read_uri, payload_all))
+  r = requests.post(url_b1 + read_uri, data=json.dumps(payload_all), headers=headers)
   # logger.info("Response from esp: %s" % r.content)
   print(r.content)
   return json.loads(r.content.decode("utf-8"))
@@ -77,33 +88,73 @@ def send_to_thingspeak(temp, humi):
   print (r.content)
 
 
+def control_fan(payload):
+  # url_b1  = 'http://192.168.1.13'
+  # fan_uri = '/fan'
+  # request to 'http://192.168.1.13/fan' 
+
+  print ("POST %s -> %s" %(url_b1 + fan_uri, payload))
+  r = requests.post(url_b1 + fan_uri, data=json.dumps(payload), headers=headers)
+  # logger.info("Response from esp: %s" % r.content)
+  print(r.content)
+  return json.loads(r.content.decode("utf-8"))
+
+def control_pump(payload):
+  # url_b1  = 'http://192.168.1.13'
+  # fan_uri = '/waterpump'
+  # request to 'http://192.168.1.13/waterpump' 
+
+  print ("POST %s -> %s" %(url_b1 + waterpump_uri, payload))
+  r = requests.post(url_b1 + waterpump_uri, data=json.dumps(payload), headers=headers)
+  # logger.info("Response from esp: %s" % r.content)
+  print(r.content)
+  return json.loads(r.content.decode("utf-8"))
+
 while True:
-  client.loop()
+  # client.loop()
 
-  response = read_all()
-  print(response)
-  if response['status'] == "success":
-    temperature = response['temperature']
-    humidity = response['humidity']
-    # print("temperature: " + str(temperature))
-    # print("humidity: " + str(humidity))
+  # response = read_all()
+  # print(response)
+  # if response['status'] == "success":
+  #   temperature = response['temperature']
+  #   humidity = response['humidity']
+  #   # print("temperature: " + str(temperature))
+  #   # print("humidity: " + str(humidity))
 
-    send_temp_to_cayenne(1,"temp,c=20.7")
-    send_humi_to_cayenne(2,humidity['value'])
+  #   send_temp_to_cayenne(1,"temp,c=20.7")
+  #   send_humi_to_cayenne(2,humidity['value'])
 
 
-    send_temp_to_cayenne(21, temperature['value'])
-    send_humi_to_cayenne(22,humidity['value'])
+  #   send_temp_to_cayenne(21, temperature['value'])
+  #   send_humi_to_cayenne(22,humidity['value'])
 
-    send_to_thingspeak(temperature['value'], humidity['value'])
+  #   send_to_thingspeak(temperature['value'], humidity['value'])
 
-  else:
-    print("ERRRRRRRRRRRRRRRR")
-    print(response['message'])
-  print("\n")
-  time.sleep(5)
+  # else:
+  #   print("ERRRRRRRRRRRRRRRR")
+  #   print(response['message'])
+  # print("\n")
+
+  control_pump(payload_pump_on)
+  time.sleep(1)
+
+  control_pump(payload_pump_off)
+  time.sleep(1)
+
+  control_pump(payload_pump_state)
+  time.sleep(1)
+  print ()
   
-
+  control_fan(payload_fan_on)
+  time.sleep(1)
+  
+  myvar = control_fan(payload_fan_off)
+  print(myvar)
+  time.sleep(1)
+  
+  control_fan(payload_fan_state)
+  time.sleep(1)
+  print ()
 
 
 
