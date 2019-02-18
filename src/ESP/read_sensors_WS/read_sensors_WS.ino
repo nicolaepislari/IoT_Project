@@ -30,7 +30,7 @@ void handleStatus();
 void handleCmd();
 
 
-
+String deviceID = "zone2";
 
 String payload = "";
 
@@ -249,8 +249,9 @@ void register_catalog(){
   
     String catalog_url = "http://192.168.1.18:8080/iamalive";  
     String ip = WiFi.localIP().toString();
-      
-    String reg_msg = "{\"type\":\"device\",\"deviceID\":\"ESP-01\",\"ip\":\""  + ip + "\"}";
+
+    
+    String reg_msg = "{\"type\":\"device\",\"deviceID\":\"" + deviceID +"\",\"ip\":\""  + ip + "\"}";
   
     HTTPClient http;
 
